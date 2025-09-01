@@ -64,7 +64,9 @@ executable quickcheck-demo
     other-modules:
         Part1,
         Part2,
-        Part3
+        Part3,
+        Part4,
+
 
     -- Other library packages from which modules are imported.
     build-depends:    base ^>=4.18.3.0,

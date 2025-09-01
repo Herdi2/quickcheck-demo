@@ -3,13 +3,34 @@ module Part4 where
 {-
 That's it. It's over. What have we learned?
 
-1. Chalmers can be good!
-2. Declarative testing
-3. Doesn't always catch everything!
+QuickCheck by John Hughes and Koen Claessen (2000),
+paper cited over 1900 times and laid the groundwork
+for many other property-based testing libraries.
 
+Positives
+* Declarative testing, reason about your code
+* Broader test coverage, with scalability
+Negatives
+* Generated tests, doesn't always lead to counter-example
+* Doesn't always test the correct functionality
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Take-away:
+Property-based testing abstracts the grunt-work into
+reasoning about properties of our code!
 -}
-
-
 
 
 

@@ -17,8 +17,9 @@ eval (Add e1 e2) = eval e1 + eval e2
 eval (Sub e1 e2) = eval e1 - eval e2
 eval (Mul e1 e2) = eval e1 * eval e2
 
+-- | One-pass simplification
 simplify :: Expr -> Expr
-simplify (Add (Lit 1) e) = e
+simplify (Add (Lit 0) e) = e
 simplify (Add e (Lit 0)) = e
 simplify (Sub e (Lit 0)) = e
 simplify (Mul _ (Lit 0)) = Lit 0
@@ -37,19 +38,19 @@ prop_simplify_preserve_semantics =
   modifyMaxSuccess (const 1000) $
     prop "'simplify' preserves semantics" $
       \e -> eval e == eval (simplify e)
--- Wait, this doesn't work?
-
-
-
-
--- Haha! Property-based testing is GARBAGE!
+-- Wait, how does this work? MAGIC?
 
 
 
 
 
 
--- Or is it?
+
+
+
+
+
+
 
 
 

@@ -4,7 +4,9 @@ import Test.Hspec
 -- | User-defined reverse list implementation
 reverse1 :: [Int] -> [Int]
 reverse1 [] = []
-reverse1 (x : xs) = reverse1 xs ++ [x]
+reverse1 (x : xs)
+  | x == 42 = reverse1 xs
+  | otherwise = reverse1 xs ++ [x]
 
 -- | Manually writing tests
 test1 :: SpecWith ()
