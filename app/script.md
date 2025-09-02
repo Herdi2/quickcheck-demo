@@ -1,54 +1,61 @@
 ## Part 1
 
-Hi, we are Vincent and Herdi doing a Demo presentation.
+Hi, we are Vincent and Herdi, and we're here to do a Demo.
 
-Today we are going to talk about Property based testing.
+Today we are going to talk about Property-based testing. But, before
+going into details on that, let us start with a motivating example.
+Here, we have defined our own `reverse` function, which reverses a list.
+Like any good software developer, we have added two unit tests to
+check that it works correctly: an empty list and an odd-length list.
 
-However, before that weneed to talk abouthow testing is normallydone.
-This is the standardtesting enviroment a lot of people here are
-familiar with, unit-testing. In this case we test if our own
-reverse function sucessfully reverses a list, by checking it against
-two hand written test cases.
-
-What could be added?
+**run base test with no modifications**
+Now, can anyone here come up with additional test-cases?
 * Testcase for even amount of numbers.
 * Testcase for big numbers.
 * Testcase for negative numbers.
 
-However even if we added a more exaustive test solution, there could still be a risk ofan adveserial or weird edgecase.
+However even if we added a more exhaustive test suite, there could still be a
+risk of an adveserial or weird edgecase.
 
-We can emulate this by changing this function topass our test, while still being wrong. In this case by reversing the list,
-and removing all instances of the number 42. If we then do not have a testcase explicitly checking a list containing 42 it
-will pass. This is one of the major weaknesses with unit tests.
+For example, in this case by reversing the list,
+and removing all instances of the number 42.
+Here, we would need to have a test-case with the value 42 to catch this!
+Although contrived, missing edge cases like this is a weakness with unit tests.
+**Add this case during speech, run and show that it succeeds with this fault!**
 
 ## Part 2
-This leads us to our main topic for this demo, property-based testing with QuickCheck. Property based testing is a form of automated testing,
-which is a part of devops.
+This leads us to our main topic for this demo, property-based testing with QuickCheck. Property based testing is a form of automated testing. It works by defining a property
+we wish to be fulfilled on a testable component. With the property defined,
+our testing library - QuickCheck - will generate inputs for this property and verify
+that it holds.
 
-Instead of checking some distinct value for an expected output, we instead check that the function or data structure satisfies
-some specific property.
 
-In this case we choose to use the property of the reverse function being the inverse to itself.
-This means that if we apply reverse twice to any list of numbers, it would act as the identity and return the same original list.
+In this case, the property we wish to test is that reverse is an inverse of itself,
+meaning if we apply reverse twice to a list, we get back the original list!
 
-When testing this on our custom reverse function we can see that it properly captures the edge case of 42, by checking this
-property on a thousand randomly generated lists. Then when a counterexample is found, QuickCheck returns this example for manual
+**Run faulty reverse and show that it fails**
+When testing this on our custom reverse function we can see that it properly captures
+the edge case of 42, by checking this property on a thousand randomly generated lists.
+Then when a counterexample is found, QuickCheck returns this example for manual
 review.
 
-Finding a counter-example, however, is not guaranteed if the test-space is too small. For example, let us only run 3 generated tests.
+Finding a counter-example, however, is not guaranteed if the test-space is too small.
+For example, let us only run 3 generated tests.
+**Modify *const 1000* to *const 3***
 As we can see, this fails to find a counter-example.
 
-A limitation of this approach is that this property does not actually capture the full semantics of the reverse function.
+This is actually our fault! This property does not actually capture the full semantics
+of the reverse function. In this case it could be easily fixed. Does
+anyone know how? (e.g. check that list before and after contain the same elements)
 
-If we where to change reverse2 to the identity function, i.e. does nothing to the list. Property-based testing does not
-catch that this is wrong, since it satisfies this property.
 
 ## Part 3
 Now, we understand the basics of property-based testing, to use randomly
 generated examples of a specific data-structure and try to find
 counter-examples that violate the property. However, note that until now
-the only data-structure we've been using has been lists of ints. But what
-if we want to use custom datatypes or data-structures? Lets look at an example!
+the data-structures we've used are built-into the language and automatically
+supported by QuickCheck. But what if we want to use custom datatypes or data-structures?
+Lets look at an example!
 
 Here we see an embedded domain-specific language, meant to represent
 artihmetic expressions. Evaluation is straight forward, and results in an
@@ -59,15 +66,14 @@ we know that adding zero to a number will result in the same number. Using
 basic math knowledge, we can extend this simplify function with many other
 cases as well!
 
-Now, how would we verify that our simplify function works correctly. One
-way of doing this is to check that it preserves semantics, in other words
-that evaluating an expression before and after simplification should
-give us the same result. So, as you can see we do not get any type errors?
-How does this work? Does Haskell know how to generate arbitrary exressions?
-No!
+Now, how would we verify that our simplify function works correctly.
+By defining properties:
+1. Evaluation should be preserved
+2. A simplified expression is smaller than or equal to the original expression
 
-We need to tell the Quickcheck library how we can generate an arbitrary
-expressions. Since the datatype is self-recursive, we give it a depth.
+But, as this comment suggest: How does QuickCheck now how to generate arbitrary
+expressions? Well, we define it by defining the `arbitrary` function for expressions.
+Since the datatype is self-recursive, we give it a depth.
 Expressions of depth 1 are literals, and any other depth will recursively
 create an arbitrary expression.
 
@@ -79,31 +85,29 @@ one-removal. This is clearly false, and running it we get a counter-example.
 But, this counter-example looks quite big. We know that simply having
 an expression Add (Lit 0) (Lit 1) should fail. Can we do something
 about this? This is where shrinking comes in! Let us tell QuickCheck how
-it should simplify a counter-example that it finds. Here, in an addition,
-if any of the two inner-expressions also make us fail the property, that is
-a smaller counter-example! Now, if we re run it we get this small example!
-Nice!
+it should simplify a counter-example that it finds. So what this says is
+that for any subexpression, we can test this to see that it violates the property.
+If it still does, that is a smaller counterexample.
+**Uncomment and run shrink**
 
 ## Part 4
-You can breathe out, its over now. That was quite technical. You might ask
-why Haskell? First off, best language ever. Secondly, QuickCheck, written for
-Haskell, was written in the year 2000 by John Hughes and Koen Claeseen, and
-has laid the ground-work for every other quickcheck-esque library in any
-language you might use, whether that be C, C++, Java, Javascript etc. It
-also introduced property-based testing as a concept!
+Perfect. Now for some trivia and recap. We chose to do this demonstration
+in Haskell, and Quickcheck, since it was this library that created what
+we now know as property-based testing.
 
-As we could see with our examples, quickchecking abstracts the test-writing
-and makes it declarative - allowing a more formal reasoning about your code.
-This of course comes with strong correctness guarantees, as it covers more
-test-cases. We get a broader test coverage, and higher scalability through
-abstraction as we can string together properties to create tests that would be impractical to write by hand.
+Specifically for devops, Quickcheck and property-based testing automates
+test-writing, turning it into declarative reasoning and functionality specification
+instead. This of course also scales better, as implementation details are abstracted
+and complex properties can be chained together.
+It also provides a broader test coverage, as random generation can catch many
+edge cases the programmer's did not think about!
 
 However, it also comes with flaws. As we could see, given a small test-space
 we may not find counter-examples. Furthermore, programmer's might miss
 testing the functionality with property-based tests, like the case where
 reversing twice is equal to the identity function.
 
-The most imporant take-aways, however, is that property-based allows us to
-avoid the grunt-work of writing unit-tests and instead reason about
-properties that our code should have. This automates test writing,
-and also helps keep the functionality in mind.
+The most imporant take-away is that property-based allows us to
+avoid the grunt-work of writing tests and instead reason about
+properties that our code should satisfy, allowing automation, abstraction
+and scalability.
