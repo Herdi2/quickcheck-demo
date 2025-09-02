@@ -10,10 +10,7 @@ data Expr =
   | Add Expr Expr
   | Sub Expr Expr
   | Mul Expr Expr
-  deriving (Show, Eq, Ord)
-
-expr :: Expr
-expr = Add (Sub (Lit 1) (Lit 2)) (Lit 1)
+  deriving (Show, Eq)
 
 eval :: Expr -> Int
 eval (Lit i) = i
@@ -25,7 +22,6 @@ eval (Mul e1 e2) = eval e1 * eval e2
 simplify :: Expr -> Expr
 simplify (Add (Lit 0) e) = e
 simplify (Add e (Lit 0)) = e
-simplify (Sub e (Lit 0)) = e
 simplify (Mul _ (Lit 0)) = Lit 0
 simplify (Mul (Lit 0) _) = Lit 0
 simplify (Add e1 e2) = Add (simplify e1) (simplify e2)
@@ -41,10 +37,11 @@ Property:
 
 prop_simplify_preserve_semantics :: SpecWith()
 prop_simplify_preserve_semantics =
-  modifyMaxSuccess (const 1000) $
+  modifyMaxSuccess (const 1000) $ do
     prop "'simplify' preserves semantics" $
       \e -> eval e == eval (simplify e)
-            && size (simplify e) <= size e
+    prop "'simplify' makes expr smaller (or equal size)" $
+      \e -> size (simplify e) <= size e
 -- Wait, how does this work? MAGIC?
 
 size :: Expr -> Int
@@ -54,21 +51,8 @@ size (Sub e1 e2) = 1 + size e1 + size e2
 size (Mul e1 e2) = 1 + size e1 + size e2
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 instance Arbitrary Expr where
+
   arbitrary :: Gen Expr
   arbitrary = sized $ \n ->
     if n <= 1 then
@@ -81,16 +65,8 @@ instance Arbitrary Expr where
         , Mul <$> resize (div n 2) arbitrary <*> resize (div n 2) arbitrary
       ]
 
-
-
-
-
-
-
-
-
-
   -- Less headache for counter examples!
+  shrink :: Expr -> [Expr]
   shrink (Lit _) = []
   shrink (Add e1 e2) = shrink e1 ++ shrink e2 ++ [e1, e2]
   shrink (Sub e1 e2) = shrink e1 ++ shrink e2 ++ [e1, e2]

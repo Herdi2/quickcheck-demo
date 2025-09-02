@@ -22,6 +22,6 @@ prop_rev2_ident list = (reverse2 . reverse2) list `shouldBe` list
 prop_reverse_empty :: SpecWith()
 prop_reverse_empty =
   describe "Testing reverse' on list" $ do
-    modifyMaxSuccess (const 3) $
+    modifyMaxSuccess (const 10000) $
       prop "Testing identity property" $
         \list -> prop_rev2_ident list

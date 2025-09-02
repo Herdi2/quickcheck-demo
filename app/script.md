@@ -24,7 +24,8 @@ Although contrived, missing edge cases like this is a weakness with unit tests.
 **Add this case during speech, run and show that it succeeds with this fault!**
 
 ## Part 2
-This leads us to our main topic for this demo, property-based testing with QuickCheck. Property based testing is a form of automated testing. It works by defining a property
+This leads us to our main topic for this demo, property-based testing with QuickCheck.
+Property based testing is a form of automated testing. It works by defining a property
 we wish to be fulfilled on a testable component. With the property defined,
 our testing library - QuickCheck - will generate inputs for this property and verify
 that it holds.
@@ -43,11 +44,6 @@ Finding a counter-example, however, is not guaranteed if the test-space is too s
 For example, let us only run 3 generated tests.
 **Modify *const 1000* to *const 3***
 As we can see, this fails to find a counter-example.
-
-This is actually our fault! This property does not actually capture the full semantics
-of the reverse function. In this case it could be easily fixed. Does
-anyone know how? (e.g. check that list before and after contain the same elements)
-
 
 ## Part 3
 Now, we understand the basics of property-based testing, to use randomly

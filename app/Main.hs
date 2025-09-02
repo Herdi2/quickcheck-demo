@@ -22,5 +22,5 @@ quickCheck =
               ++"+ Broader test coverage",
     negatives = putStrLn $ "- Difficulty in expressing properties\n"
               ++"- False sense of security",
-    takeaway = putStrLn "Property-based testing turns test-writing into reasoning about functionality, allowing abstraction, scalability and easier automation!"
+    takeaway = putStrLn "Property-based testing allows abstraction, scalability and easier automation!"
   }
