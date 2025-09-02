@@ -5,10 +5,8 @@ import Test.Hspec.QuickCheck
 
 {-
 Intro: Property-based testing
-
 Automated testing method - generate the tests!
  -}
-
 reverse2 :: [Int] -> [Int]
 reverse2 [] = []
 reverse2 (x : xs)

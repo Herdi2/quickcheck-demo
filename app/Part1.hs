@@ -6,6 +6,13 @@ reverse1 :: [Int] -> [Int]
 reverse1 [] = []
 reverse1 (x : xs) = reverse1 xs ++ [x]
 
+-- | Manually writing tests
+test1 :: SpecWith ()
+test1 =
+  describe "Testing user-defined reverse on lists" $ do
+    it "Reverse empty list" $ reverse1 [] `shouldBe` []
+    it "Reverse small list" $ reverse1 [1,2,3] `shouldBe` [3,2,1]
+
 -- | Incorrect reverse implementation
 reverse2 :: [Int] -> [Int]
 reverse2 [] = []
@@ -13,10 +20,3 @@ reverse2 (x : xs)
   -- Remove the meaning of life (42) from the list
   | x == 42 = reverse2 xs
   | otherwise = reverse2 xs ++ [x]
-
--- | Manually writing tests
-test1 :: SpecWith ()
-test1 =
-  describe "Testing user-defined reverse on lists" $ do
-    it "Reverse empty list" $ reverse2 [] `shouldBe` []
-    it "Reverse small list" $ reverse2 [1,2,3] `shouldBe` [3,2,1]

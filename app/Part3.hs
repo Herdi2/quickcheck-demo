@@ -20,7 +20,7 @@ eval (Mul e1 e2) = eval e1 * eval e2
 
 -- | One-pass simplification
 simplify :: Expr -> Expr
-simplify (Add (Lit 0) e) = e
+simplify (Add (Lit 1) e) = e
 simplify (Add e (Lit 0)) = e
 simplify (Mul _ (Lit 0)) = Lit 0
 simplify (Mul (Lit 0) _) = Lit 0
